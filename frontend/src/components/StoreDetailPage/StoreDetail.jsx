@@ -70,8 +70,12 @@ const StoreDetailPage = () => {
           </div>
 
           <div className="flex gap-3 pt-4">
-            <button className="flex-1 bg-emerald-500 text-white py-4 rounded-2xl font-black shadow-lg hover:bg-emerald-600 transition-all active:scale-95">Order Now</button>
-            <button className="flex-1 border-2 border-emerald-500 text-emerald-500 py-4 rounded-2xl font-black flex items-center justify-center gap-2 hover:bg-emerald-50 transition-all active:scale-95"><Phone size={18} /> Call</button>
+<button 
+  onClick={() => navigate('/checkout')} // Is path ko apne App.js route se match karein
+  className="flex-1 bg-emerald-500 text-white py-4 rounded-2xl font-black shadow-lg hover:bg-emerald-600 transition-all active:scale-95"
+>
+  Order Now
+</button>            <button className="flex-1 border-2 border-emerald-500 text-emerald-500 py-4 rounded-2xl font-black flex items-center justify-center gap-2 hover:bg-emerald-50 transition-all active:scale-95"><Phone size={18} /> Call</button>
           </div>
 
           <button 

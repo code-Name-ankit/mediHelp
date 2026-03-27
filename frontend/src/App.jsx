@@ -13,6 +13,8 @@ import Testimonials from "./components/Testimonials";
 import Footer from "./components/Footer";
 import SearchPage from "./components/SearchPage/SearchPage"; //  Search Page component
 import StoreDetailPage from "./components/StoreDetailPage/StoreDetail"; //  Store Detail Page component
+import CheckoutPage from "./components/CheckoutPage/CheckoutPage"; //  Checkout Page component
+
 
 function App() {
   return (
@@ -39,6 +41,7 @@ function App() {
           {/* --- SEARCH RESULTS ROUTE --- */}
           <Route path="/search" element={<SearchPage />} />
           <Route path="/search/:id" element={<StoreDetailPage />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
         </Routes>
 
         <Footer />
