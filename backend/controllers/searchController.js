@@ -1,7 +1,7 @@
 import Store from "../models/Store.js";
 import Medicine from "../models/Medicine.js";
 
-// 📏 Distance Function
+//  Distance Function
 const getDistance = (lat1, lon1, lat2, lon2) => {
   const R = 6371;
 
@@ -99,7 +99,7 @@ export const searchMedicine = async (req, res) => {
     });
 
     // 🔥 Nearby filter + fallback
-    let nearby = result.filter(item => item.distance <= 5);
+    let nearby = result.filter(item => item.distance <= 5);  // 5 km radius
 
     if (nearby.length === 0) {
       nearby = result;
