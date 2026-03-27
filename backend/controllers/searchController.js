@@ -99,7 +99,7 @@ export const searchMedicine = async (req, res) => {
     });
 
     // 🔥 Nearby filter + fallback
-    let nearby = result.filter(item => item.distance <= 5);  // 5 km radius
+    let nearby = result.filter(item => item.distance <= 10);  // 5 km radius
 
     if (nearby.length === 0) {
       nearby = result;
