@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import MapView from "./MapView";
 import StoreCard from "./StoreCard";
@@ -10,17 +10,25 @@ import {
   Search,
   Truck,
   Clock,
-  Tag
+  Tag,
+  MapPin,
+  Sparkles,
+  ArrowRight,
 } from "lucide-react";
 
 const SearchPage = () => {
+  const { search } = useLocation();
+  const navigate = useNavigate();
+  const queryParams = new URLSearchParams(search);
+  const medicineFromUrl = queryParams.get("medicine") || "";
+
   const [stores, setStores] = useState([]);
   const [viewMode, setViewMode] = useState("list");
   const [selectedStore, setSelectedStore] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [localSearch, setLocalSearch] = useState(medicineFromUrl);
 
-  // Filter States
   const [distance, setDistance] = useState(5);
   const [filters, setFilters] = useState({
     delivery: false,
@@ -28,43 +36,35 @@ const SearchPage = () => {
     hasDiscount: false,
   });
 
-  const { search } = useLocation();
-  const queryParams = new URLSearchParams(search);
-  const medicineFromUrl = queryParams.get("medicine") || "";
-
-  const [localSearch, setLocalSearch] = useState(medicineFromUrl);
-  const navigate = useNavigate();
   const userLocation = { lat: 21.1702, lng: 72.8311 };
 
-  // API Fetch
+  const fetchStores = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("http://localhost:5000/api/search", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          medicine: medicineFromUrl,
+          lat: userLocation.lat,
+          lng: userLocation.lng,
+          filters,
+          maxDistance: distance,
+        }),
+      });
+      const data = await response.json();
+      setStores(data || []);
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setTimeout(() => setLoading(false), 600);
+    }
+  }, [medicineFromUrl, filters, distance]);
+
   useEffect(() => {
-    const fetchStores = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch("http://localhost:5000/api/search", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            medicine: medicineFromUrl,
-            lat: userLocation.lat,
-            lng: userLocation.lng,
-            filters,
-            maxDistance: distance
-          }),
-        });
-        const data = await response.json();
-        setStores(data);
-      } catch (error) {
-        console.error("Error:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    fetchStores();
+  }, [fetchStores]);
 
-    if (medicineFromUrl) fetchStores();
-  }, [medicineFromUrl]);
-
-  // Sync search input with URL
   useEffect(() => {
     setLocalSearch(medicineFromUrl);
   }, [medicineFromUrl]);
@@ -77,222 +77,206 @@ const SearchPage = () => {
     }
   };
 
-  const handleViewMap = (store) => {
-    setSelectedStore(store);
-    setViewMode("map");
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  // Distance Slider dynamic background logic
   const getSliderBackground = () => {
-    const min = 1;
-    const max = 20;
-    const percentage = ((distance - min) * 100) / (max - min);
+    const percentage = ((distance - 1) * 100) / 19;
     return {
-      background: `linear-gradient(to right, #10b981 ${percentage}%, #e2e8f0 ${percentage}%)`
+      background: `linear-gradient(to right, #10b981 ${percentage}%, #f1f5f9 ${percentage}%)`,
     };
   };
 
   const FilterContent = () => (
-    <div className="space-y-6 p-1 lg:p-0">
-      <div className="flex justify-between items-center lg:mb-4">
-        <h2 className="text-xl lg:text-2xl font-black text-slate-900 flex items-center gap-2 italic tracking-tight">
-          <SlidersHorizontal size={20} className="text-emerald-500" /> Filters
-        </h2>
-        <button onClick={() => setIsFilterOpen(false)} className="lg:hidden p-2 bg-slate-100 rounded-full">
-          <X size={20} />
-        </button>
-      </div>
-
-      
-      {/* Distance Slider with Green Fill */}
-      <div className="space-y-4 pt-6 border-t border-slate-100">
-        <div className="flex justify-between items-center">
-          <h3 className="font-bold text-slate-800">Distance Radius</h3>
-          <span className="text-emerald-600 font-black text-xs bg-emerald-50 px-3 py-1 rounded-full border border-emerald-100">
-            {distance} KM
-          </span>
+    <div className="space-y-8">
+      <div>
+        <div className="flex items-center gap-2 mb-6">
+          <MapPin size={16} className="text-emerald-500" />
+          <h3 className="text-xs font-black text-slate-800 uppercase tracking-widest text-left">Search Radius</h3>
         </div>
-        <div className="relative pt-2">
+        <div className="bg-slate-50/80 p-5 rounded-[32px] border border-slate-100/50 shadow-inner text-left">
+          <div className="flex justify-between items-end mb-4">
+            <span className="text-[10px] font-bold text-slate-400 uppercase italic">Radius</span>
+            <span className="text-2xl font-black text-emerald-500">{distance}<span className="text-xs ml-0.5 uppercase">km</span></span>
+          </div>
           <input
-            type="range"
-            min="1"
-            max="20"
-            value={distance}
+            type="range" min="1" max="20" value={distance}
             onChange={(e) => setDistance(e.target.value)}
             style={getSliderBackground()}
-            className="w-full h-2 rounded-lg appearance-none cursor-pointer accent-emerald-500 transition-all custom-range-slider"
+            className="w-full h-1.5 rounded-lg appearance-none cursor-pointer custom-range-slider transition-all"
           />
-          <div className="flex justify-between mt-2 text-[10px] font-black text-slate-400 uppercase italic">
-            <span>1 KM</span>
-            <span>20 KM</span>
-          </div>
         </div>
       </div>
 
-      {/* Service Filters */}
-      <div className="space-y-3 pt-6 border-t border-slate-100">
-        <h3 className="font-bold text-slate-800 mb-4 uppercase text-xs tracking-widest">Store Services</h3>
-        
-        <label className="flex items-center justify-between cursor-pointer group">
-          <div className="flex items-center gap-3">
-            <div className={`p-2 rounded-lg ${filters.delivery ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-400'}`}>
-              <Truck size={18} />
-            </div>
-            <span className="text-sm font-bold text-slate-600 group-hover:text-emerald-500">Home Delivery</span>
-          </div>
-          <input 
-            type="checkbox" 
-            checked={filters.delivery}
-            onChange={() => setFilters({...filters, delivery: !filters.delivery})}
-            className="w-5 h-5 rounded-md border-slate-300 text-emerald-500 focus:ring-emerald-500" 
-          />
-        </label>
-
-        <label className="flex items-center justify-between cursor-pointer group">
-          <div className="flex items-center gap-3">
-            <div className={`p-2 rounded-lg ${filters.open247 ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-400'}`}>
-              <Clock size={18} />
-            </div>
-            <span className="text-sm font-bold text-slate-600 group-hover:text-emerald-500">Open 24/7</span>
-          </div>
-          <input 
-            type="checkbox" 
-            checked={filters.open247}
-            onChange={() => setFilters({...filters, open247: !filters.open247})}
-            className="w-5 h-5 rounded-md border-slate-300 text-emerald-500 focus:ring-emerald-500" 
-          />
-        </label>
-
-        <label className="flex items-center justify-between cursor-pointer group">
-          <div className="flex items-center gap-3">
-            <div className={`p-2 rounded-lg ${filters.hasDiscount ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-400'}`}>
-              <Tag size={18} />
-            </div>
-            <span className="text-sm font-bold text-slate-600 group-hover:text-emerald-500">Offers Available</span>
-          </div>
-          <input 
-            type="checkbox" 
-            checked={filters.hasDiscount}
-            onChange={() => setFilters({...filters, hasDiscount: !filters.hasDiscount})}
-            className="w-5 h-5 rounded-md border-slate-300 text-emerald-500 focus:ring-emerald-500" 
-          />
-        </label>
+      <div className="pt-8 border-t border-slate-100/60 text-left">
+        <h3 className="text-xs font-black text-slate-800 uppercase tracking-widest mb-6 text-left">Quick Filters</h3>
+        <div className="space-y-3">
+          {[
+            { id: 'delivery', label: 'Home Delivery', icon: Truck },
+            { id: 'open247', label: '24/7 Available', icon: Clock },
+            { id: 'hasDiscount', label: 'Best Offers', icon: Tag }
+          ].map((item) => (
+            <label key={item.id} className={`flex items-center justify-between p-4 rounded-2xl cursor-pointer border-2 transition-all duration-300 ${filters[item.id] ? 'border-emerald-500 bg-emerald-50/50 shadow-sm' : 'border-transparent bg-slate-50 hover:bg-slate-100'}`}>
+              <div className="flex items-center gap-3">
+                <item.icon size={18} className={filters[item.id] ? 'text-emerald-500' : 'text-slate-400'} />
+                <span className={`text-sm font-bold ${filters[item.id] ? 'text-emerald-700' : 'text-slate-600'}`}>{item.label}</span>
+              </div>
+              <input type="checkbox" className="hidden" checked={filters[item.id]} onChange={() => setFilters({ ...filters, [item.id]: !filters[item.id] })} />
+              {filters[item.id] && <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full shadow-[0_0_12px_rgba(16,185,129,0.6)] animate-pulse" />}
+            </label>
+          ))}
+        </div>
       </div>
-
-      <button 
-        onClick={handleSearchSubmit}
-        className="hidden lg:block w-full bg-[#0f2a47] text-white py-4 rounded-[20px] font-black text-xs uppercase tracking-widest shadow-xl hover:bg-slate-800 transition-all mt-4"
-      >
-        Apply All Filters
-      </button>
-
-      {/* Slider Styling CSS */}
-      <style>{`
-        .custom-range-slider::-webkit-slider-thumb {
-          appearance: none;
-          height: 18px;
-          width: 18px;
-          border-radius: 50%;
-          background: #ffffff;
-          border: 3px solid #10b981;
-          box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-          cursor: pointer;
-        }
-      `}</style>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-white pt-24 pb-10 px-4 md:px-8 lg:px-12">
-      <div className="max-w-[1500px] mx-auto">
+    <div className="h-screen w-full bg-[#f8fafc] overflow-hidden flex flex-col pt-24 relative z-10 text-slate-900">
+      <div className="max-w-[1600px] w-full mx-auto flex flex-1 overflow-hidden px-4 md:px-8 lg:px-12 pb-6 gap-8">
         
-        {/* Mobile View */}
-        <div className="lg:hidden flex flex-col gap-3 mb-6">
-          <form onSubmit={handleSearchSubmit} className="flex gap-2">
-            <div className="relative flex-1">
-              <input
-                type="text"
-                placeholder="Search..."
-                value={localSearch}
-                onChange={(e) => setLocalSearch(e.target.value)}
-                className="w-full bg-slate-50 border-2 border-slate-100 rounded-[20px] py-3.5 pl-12 pr-4 text-sm font-bold focus:border-emerald-500 outline-none"
-              />
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+        {/* SIDEBAR (LAPTOP) */}
+        <aside className="hidden lg:block w-80 shrink-0 h-full overflow-y-auto pr-2 no-scrollbar">
+          <div className="space-y-6 pb-10">
+            <div className="relative group mt-10">
+              <div className="absolute -inset-1 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-[28px] blur opacity-10 group-hover:opacity-25 transition duration-500"></div>
+              <form onSubmit={handleSearchSubmit} className="relative flex items-center">
+                <input
+                  type="text" placeholder="Search medicine..." value={localSearch}
+                  onChange={(e) => setLocalSearch(e.target.value)}
+                  className="w-full bg-white border border-slate-100 rounded-[24px] py-5 pl-12 pr-16 text-sm font-bold shadow-sm focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/5 outline-none transition-all"
+                />
+                <Search className="absolute left-5 text-emerald-500" size={18} />
+                <button type="submit" className="absolute right-2 bg-[#0f2a47] hover:bg-slate-800 text-white p-2.5 rounded-[18px] transition-all active:scale-95 shadow-lg">
+                  <ArrowRight size={18} />
+                </button>
+              </form>
             </div>
-            <button type="submit" className="bg-[#0f2a47] text-white px-6 rounded-[20px] font-bold">Go</button>
-          </form>
-
-          <button
-            onClick={() => setIsFilterOpen(true)}
-            className="w-full bg-emerald-500 text-white py-3.5 rounded-[20px] font-black flex items-center justify-center gap-2 shadow-lg italic"
-          >
-            <SlidersHorizontal size={18} /> Filter Results
-          </button>
-        </div>
-
-        <div className="flex flex-col lg:flex-row gap-10">
-          <aside className="hidden lg:block w-80 shrink-0">
-            <div className="sticky top-28 bg-white border border-slate-100 p-7 rounded-[40px] shadow-[0_20px_50px_rgba(0,0,0,0.04)]">
+            <div className="bg-white/90 backdrop-blur-xl border border-white p-8 rounded-[40px] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.03)]">
               <FilterContent />
             </div>
-          </aside>
+          </div>
+        </aside>
 
-          <main className="flex-1">
-            <div className="hidden lg:flex justify-between items-center mb-10 border-b pb-8">
-              <div>
-                <h1 className="text-3xl font-black text-slate-900 italic tracking-tight">
-                  Results for <span className="text-emerald-500">'{medicineFromUrl || "Pharmacies"}'</span>
-                </h1>
-                <p className="text-slate-400 text-xs font-bold mt-1 uppercase tracking-widest italic">Surat, Gujarat</p>
-              </div>
+        {/* MAIN AREA */}
+        <main className="flex-1 h-full overflow-y-auto custom-scrollbar relative">
+          <header className="sticky top-0 bg-[#f8fafc]/95 backdrop-blur-md z-20 py-4 mb-6">
+            <div className="flex flex-col gap-5">
               
-              <div className="flex bg-slate-100 p-1 rounded-2xl border border-slate-200">
-                <button onClick={() => setViewMode("list")} className={`px-10 py-3 rounded-xl font-black text-sm flex items-center gap-2 transition-all ${viewMode === "list" ? "bg-[#0f2a47] text-white shadow-lg" : "text-slate-500"}`}>
-                  <List size={18} /> List
+              {/* MOBILE TOP LINE: SEARCH (With button inside) + FILTER BUTTON */}
+              <div className="flex items-center gap-3 lg:hidden">
+                <form onSubmit={handleSearchSubmit} className="relative flex-1 flex items-center">
+                  <input
+                    type="text"
+                    placeholder="Search medicine..."
+                    value={localSearch}
+                    onChange={(e) => setLocalSearch(e.target.value)}
+                    className="w-full bg-white border border-slate-200 rounded-2xl py-4 pl-11 pr-14 text-sm font-bold shadow-sm focus:border-emerald-500 outline-none transition-all"
+                  />
+                  <Search className="absolute left-4 text-slate-400" size={18} />
+                  
+                  {/* SEARCH BUTTON INSIDE INPUT */}
+                  <button 
+                    type="submit"
+                    className="absolute right-2 bg-[#0f2a47] text-white p-2 rounded-xl active:scale-90 transition-transform"
+                  >
+                    <ArrowRight size={20} />
+                  </button>
+                </form>
+                
+                {/* COMPACT FILTER BUTTON ADJACENT TO SEARCH */}
+                <button 
+                  onClick={() => setIsFilterOpen(true)}
+                  className="bg-white border border-slate-200 text-[#0f2a47] p-4 rounded-2xl shadow-sm active:scale-95 transition-all"
+                >
+                  <SlidersHorizontal size={22} className="text-emerald-500" />
                 </button>
-                <button onClick={() => setViewMode("map")} className={`px-10 py-3 rounded-xl font-black text-sm flex items-center gap-2 transition-all ${viewMode === "map" ? "bg-[#0f2a47] text-white shadow-lg" : "text-slate-500"}`}>
-                  <MapIcon size={18} /> Map
-                </button>
+              </div>
+
+              {/* TITLE & VIEW SWITCHER */}
+              <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+                <div className="space-y-2">
+                  
+                  <h1 className="text-2xl lg:text-5xl font-black tracking-tighter leading-none">
+                    Matches for <span className="bg-gradient-to-r from-emerald-600 to-teal-400 bg-clip-text text-transparent italic">"{medicineFromUrl || "All Stores"}"</span>
+                  </h1>
+                </div>
+
+                <div className="flex bg-white/80 backdrop-blur-md p-1.5 rounded-[24px] shadow-xl border border-white self-start">
+                  <button
+                    onClick={() => setViewMode("list")}
+                    className={`px-8 py-3.5 rounded-[20px] font-black text-[10px] flex items-center gap-3 transition-all duration-500 uppercase tracking-widest ${viewMode === "list" ? "bg-[#0f2a47] text-white shadow-lg" : "text-slate-400 hover:bg-slate-50"}`}
+                  >
+                    <List size={16} /> List
+                  </button>
+                  <button
+                    onClick={() => setViewMode("map")}
+                    className={`px-8 py-3.5 rounded-[20px] font-black text-[10px] flex items-center gap-3 transition-all duration-500 uppercase tracking-widest ${viewMode === "map" ? "bg-[#0f2a47] text-white shadow-lg" : "text-slate-400 hover:bg-slate-50"}`}
+                  >
+                    <MapIcon size={16} /> Map
+                  </button>
+                </div>
               </div>
             </div>
+          </header>
 
-            {viewMode === "list" ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                {loading ? (
-                  [1, 2, 3, 4, 5, 6].map((i) => <div key={i} className="h-[450px] bg-slate-50 animate-pulse rounded-[32px]"></div>)
-                ) : stores.length > 0 ? (
-                  stores.map((s, i) => <StoreCard key={i} store={s} onViewMap={handleViewMap} />)
-                ) : (
-                  <div className="col-span-full py-24 text-center bg-slate-50 rounded-[40px] border-2 border-dashed border-slate-200">
-                    <p className="text-slate-400 font-bold text-lg italic">No results found for your filters.</p>
-                  </div>
-                )}
+          {/* STORE LISTING GRID */}
+          <div className="relative z-10 pb-10 px-1">
+            {loading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                {[1, 2, 3, 4, 5, 6].map((i) => (
+                  <div key={i} className="h-[400px] bg-white rounded-[40px] border border-slate-50 animate-pulse" />
+                ))}
               </div>
+            ) : stores.length > 0 ? (
+              viewMode === "list" ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                  {stores.map((s, i) => (
+                    <StoreCard key={i} store={s} onViewMap={() => { setSelectedStore(s); setViewMode("map"); }} />
+                  ))}
+                </div>
+              ) : (
+                <div className="w-full h-[calc(100vh-280px)] rounded-[40px] overflow-hidden border-[12px] border-white shadow-2xl relative">
+                  <MapView stores={stores} selectedStore={selectedStore} userLocation={userLocation} />
+                </div>
+              )
             ) : (
-              <div className="w-full h-[65vh] lg:h-[780px] relative rounded-[48px] overflow-hidden border-8 border-slate-50 shadow-2xl">
-                <MapView stores={stores} selectedStore={selectedStore} userLocation={userLocation} />
+              <div className="py-32 text-center bg-white rounded-[50px] border border-slate-50 shadow-sm">
+                <p className="text-slate-400 font-black text-xl italic px-4">No results found for your filters.</p>
               </div>
             )}
-          </main>
-        </div>
+          </div>
+        </main>
       </div>
 
+      {/* MOBILE BOTTOM SHEET DRAWER */}
       {isFilterOpen && (
         <div className="fixed inset-0 z-[100] lg:hidden">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsFilterOpen(false)}></div>
-          <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-[40px] p-8 pb-12 shadow-2xl">
-            <div className="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-8"></div>
-            <FilterContent />
+          <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300" onClick={() => setIsFilterOpen(false)} />
+          <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-[40px] shadow-2xl p-8 pb-12 animate-in slide-in-from-bottom duration-500">
+            <div className="w-16 h-1.5 bg-slate-100 rounded-full mx-auto mb-10" />
+            <div className="flex justify-between items-center mb-8">
+              <h2 className="text-2xl font-black italic tracking-tight text-left">Refine Search</h2>
+              <button onClick={() => setIsFilterOpen(false)} className="p-2 bg-slate-50 rounded-full text-slate-400"><X size={20}/></button>
+            </div>
+            <div className="max-h-[60vh] overflow-y-auto no-scrollbar">
+              <FilterContent />
+            </div>
             <button
-              onClick={handleSearchSubmit}
-              className="w-full bg-[#0f2a47] text-white py-4 rounded-2xl font-black text-sm shadow-xl mt-8 uppercase tracking-widest"
+              onClick={() => setIsFilterOpen(false)}
+              className="w-full bg-emerald-500 text-white py-5 rounded-[24px] font-black mt-10 shadow-lg shadow-emerald-100 uppercase tracking-widest text-xs"
             >
-              Update Search
+              Show Results
             </button>
           </div>
         </div>
       )}
+
+      <style>{`
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .custom-range-slider::-webkit-slider-thumb {
+          appearance: none; height: 18px; width: 18px; border-radius: 50%;
+          background: #ffffff; border: 4px solid #10b981; cursor: pointer;
+        }
+      `}</style>
     </div>
   );
 };

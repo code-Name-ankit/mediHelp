@@ -78,7 +78,7 @@ const MapView = ({ stores, selectedStore, userLocation }) => {
 
         {/* 🔴 User Location Marker (Red Pin) */}
         <Marker position={[userLocation.lat, userLocation.lng]} icon={redIcon}>
-          <Popup><div className="p-3 font-bold text-center text-xs">📍 Aap Yahan Hain</div></Popup>
+          <Popup><div className="p-3 font-bold text-center text-xs">You</div></Popup>
         </Marker>
 
         {/* Stores Markers (Green or Blue Pins) */}
