@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { MapPin, Bell, User } from 'lucide-react';
+import { MapPin, Bell, User, ShoppingCart } from 'lucide-react'; // 1. ShoppingCart import kiya
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [cartCount, setCartCount] = useState(2); 
 
-  // Scroll hone par navbar ka background change karne ke liye logic
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -46,14 +46,27 @@ const Navbar = () => {
         </div>
 
         {/* --- Action Buttons --- */}
-        <div className="flex items-center gap-5">
-          {/* Notification Icon (As seen in your image) */}
-          <button className="relative p-2 text-slate-300 hover:text-white transition-colors bg-white/5 rounded-full border border-white/10">
-            <Bell size={20} />
-            <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-[#1a3a5f]"></span>
+        <div className="flex items-center gap-4">
+          
+          {/* --- Cart Icon --- */}
+          <button className="relative p-2.5 text-slate-300 hover:text-white transition-all bg-white/5 hover:bg-white/10 rounded-full border border-white/10 group">
+            <ShoppingCart size={20} className="group-hover:scale-110 transition-transform" />
+            {/* Cart Badge */}
+            {cartCount > 0 && (
+              <span className="absolute -top-1 -right-1 w-5 h-5 bg-emerald-500 text-white text-[10px] font-black flex items-center justify-center rounded-full border-2 border-[#1a3a5f] shadow-lg">
+                {cartCount}
+              </span>
+            )}
           </button>
 
-          <button className="hidden sm:flex items-center gap-2 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-6 py-2.5 rounded-xl font-bold transition-all shadow-lg shadow-green-900/20 active:scale-95">
+          {/* --- Notification Icon --- */}
+          <button className="relative p-2.5 text-slate-300 hover:text-white transition-all bg-white/5 hover:bg-white/10 rounded-full border border-white/10 group">
+            <Bell size={20} className="group-hover:shake transition-transform" />
+            <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-red-500 rounded-full border border-[#1a3a5f]"></span>
+          </button>
+
+          {/* --- Login Button --- */}
+          <button className="hidden sm:flex items-center gap-2 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-6 py-2.5 rounded-xl font-bold transition-all shadow-lg shadow-green-900/20 active:scale-95 ml-2">
             <User size={18} />
             Login
           </button>

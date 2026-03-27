@@ -11,7 +11,8 @@ import Features from "./components/Features";
 import ExpertAdvice from "./components/ExpertAdvice";
 import Testimonials from "./components/Testimonials";
 import Footer from "./components/Footer";
-import SearchPage from "./components/SearchPage"; // Naya Search Page component
+import SearchPage from "./components/SearchPage/SearchPage"; //  Search Page component
+import StoreDetailPage from "./components/StoreDetailPage/StoreDetail"; //  Store Detail Page component
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
 
           {/* --- SEARCH RESULTS ROUTE --- */}
           <Route path="/search" element={<SearchPage />} />
+          <Route path="/search/:id" element={<StoreDetailPage />} />
         </Routes>
 
         <Footer />

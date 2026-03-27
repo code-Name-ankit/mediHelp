@@ -1,8 +1,12 @@
 import React from 'react';
 import { Star, MapPin, Clock, Navigation } from 'lucide-react';
+import { useNavigate } from 'react-router-dom'; // 1. useNavigate import karein
 
 const StoreCard = ({ store, onViewMap }) => {
-  const { storeName, address, distance, rating = 4.5, medicine } = store;
+  // store object se 'id' ko destructure karein (agar data mein id hai)
+  const { id, storeName, distance, rating = 4.5, medicine } = store;
+  
+  const navigate = useNavigate(); // 2. hook initialize karein
 
   return (
     <div className="bg-white rounded-[12px] border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden hover:shadow-xl transition-all group h-full flex flex-col">
@@ -40,7 +44,11 @@ const StoreCard = ({ store, onViewMap }) => {
 
         {/* --- Action Buttons --- */}
         <div className="pt-2 space-y-2 mt-auto">
-          <button className="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-3.5 rounded-2xl font-black text-xs transition-all active:scale-95 shadow-lg shadow-emerald-200 uppercase tracking-wider">
+          {/* 3. onClick handler add karein */}
+          <button 
+            onClick={() => navigate(`/search/${id || '1'}`)} 
+            className="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-3.5 rounded-2xl font-black text-xs transition-all active:scale-95 shadow-lg shadow-emerald-200 uppercase tracking-wider"
+          >
             View Details
           </button>
           
