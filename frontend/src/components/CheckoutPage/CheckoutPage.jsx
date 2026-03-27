@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
-import { ChevronLeft, Plus, Minus, CheckCircle2, PartyPopper, Loader2 } from 'lucide-react';
+import { ChevronLeft, Plus, Minus, PartyPopper, Loader2, Check, Edit2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  
+  // --- Address State ---
+  const [address, setAddress] = useState("123 Bark Street, PetTown, CA 90210");
+  const [isEditingAddress, setIsEditingAddress] = useState(false);
+  const [tempAddress, setTempAddress] = useState(address);
 
   const [items, setItems] = useState([
     { id: 1, name: "Cephatryl Forte", price: 15.00, qty: 1, img: "https://cdn-icons-png.flaticon.com/512/822/822143.png" },
@@ -21,24 +26,26 @@ const CheckoutPage = () => {
 
   const total = items.reduce((acc, item) => acc + (item.price * item.qty), 0).toFixed(2);
 
-  // --- Simulated Stripe Payment Flow ---
   const handlePlaceOrder = () => {
     setIsProcessing(true);
-
-    // Simulate Network Delay (Stripe API call)
     setTimeout(() => {
       setIsProcessing(false);
       setIsSuccess(true);
     }, 2500);
   };
 
+  // Address Save Logic
+  const saveAddress = () => {
+    setAddress(tempAddress);
+    setIsEditingAddress(false);
+  };
+
   return (
     <div className="h-screen w-full bg-slate-50 font-sans flex flex-col items-center overflow-hidden relative mt-11">
       
-      {/* Main Card Container */}
       <div className="w-full max-w-md bg-white h-screen md:h-[90vh] md:my-auto md:rounded-[30px] shadow-2xl border border-slate-100 flex flex-col overflow-hidden">
         
-        {/* --- FIXED HEADER --- */}
+        {/* Header */}
         <div className="shrink-0 bg-white z-20">
           <div className="p-6 flex items-center border-b border-slate-50">
             <button onClick={() => navigate(-1)} className="p-2 bg-slate-100 rounded-full hover:bg-slate-200 transition-all">
@@ -52,7 +59,7 @@ const CheckoutPage = () => {
           </div>
         </div>
 
-        {/* --- SCROLLABLE MEDICINE LIST --- */}
+        {/* Scrollable Medicines */}
         <div className="flex-1 overflow-y-auto px-6 py-4 space-y-6 no-scrollbar">
           {items.map((item) => (
             <div key={item.id} className="flex items-start gap-4 animate-in fade-in duration-500">
@@ -75,23 +82,53 @@ const CheckoutPage = () => {
           ))}
         </div>
 
-        {/* --- FIXED BOTTOM SECTION --- */}
+        {/* Bottom Section */}
         <div className="shrink-0 bg-white border-t border-slate-100 p-6 space-y-5">
           <div className="flex justify-between items-baseline">
             <span className="text-xs font-black text-slate-400 uppercase tracking-wider">Total Amount</span>
             <span className="text-3xl font-black text-emerald-600 tracking-tighter">${total}</span>
           </div>
 
-          <section className="bg-slate-50 p-4 rounded-[24px] border border-slate-100">
-            <h4 className="font-black text-slate-800 text-[11px] mb-1 italic">Delivery Address</h4>
-            <p className="text-[11px] text-slate-400 font-bold truncate">123 Bark Street, PetTown, CA 90210</p>
+          {/* --- Editable Address Section --- */}
+          <section className="bg-slate-50 p-4 rounded-[24px] border border-slate-100 transition-all">
+            <div className="flex justify-between items-center mb-1">
+              <h4 className="font-black text-slate-800 text-[11px] italic">Delivery Address</h4>
+              {!isEditingAddress ? (
+                <button 
+                  onClick={() => setIsEditingAddress(true)}
+                  className="text-emerald-500 text-[10px] font-black uppercase tracking-widest hover:underline flex items-center gap-1"
+                >
+                  <Edit2 size={10} /> Change
+                </button>
+              ) : (
+                <button 
+                  onClick={saveAddress}
+                  className="text-blue-600 text-[10px] font-black uppercase tracking-widest hover:underline flex items-center gap-1"
+                >
+                  <Check size={12} /> Save
+                </button>
+              )}
+            </div>
+            
+            {isEditingAddress ? (
+              <textarea 
+                className="w-full bg-white border border-slate-200 rounded-xl p-2 text-[11px] font-bold text-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+                rows="2"
+                value={tempAddress}
+                onChange={(e) => setTempAddress(e.target.value)}
+              />
+            ) : (
+              <p className="text-[11px] text-slate-400 font-bold leading-tight">
+                {address}
+              </p>
+            )}
           </section>
 
           <button 
             onClick={handlePlaceOrder}
-            disabled={isProcessing}
+            disabled={isProcessing || isEditingAddress}
             className={`w-full py-5 rounded-[24px] font-black text-lg shadow-xl transition-all flex items-center justify-center gap-2 
-              ${isProcessing ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : 'bg-emerald-600 text-white hover:bg-emerald-700 active:scale-95 shadow-emerald-200'}`}
+              ${isProcessing || isEditingAddress ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : 'bg-emerald-600 text-white hover:bg-emerald-700 active:scale-95 shadow-emerald-200'}`}
           >
             {isProcessing ? (
               <><Loader2 className="animate-spin" size={20} /> Processing...</>
@@ -102,7 +139,7 @@ const CheckoutPage = () => {
         </div>
       </div>
 
-      {/* --- SUCCESS MODAL --- */}
+      {/* Success Modal */}
       {isSuccess && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-300">
           <div className="bg-white w-full max-w-xs rounded-[40px] p-8 text-center shadow-2xl animate-in zoom-in-95 duration-300">
