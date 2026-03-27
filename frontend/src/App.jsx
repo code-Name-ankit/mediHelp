@@ -14,7 +14,7 @@ import Footer from "./components/Footer";
 import SearchPage from "./components/SearchPage/SearchPage"; //  Search Page component
 import StoreDetailPage from "./components/StoreDetailPage/StoreDetail"; //  Store Detail Page component
 import CheckoutPage from "./components/CheckoutPage/CheckoutPage"; //  Checkout Page component
-
+import AuthForm from "./components/auth/AuthForm"; // Authentication Form component
 
 function App() {
   return (
@@ -42,6 +42,8 @@ function App() {
           <Route path="/search" element={<SearchPage />} />
           <Route path="/search/:id" element={<StoreDetailPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
+        <Route path="/login" element={<AuthForm mode="login" />} />
+  <Route path="/register" element={<AuthForm mode="register" />} />
         </Routes>
 
         <Footer />

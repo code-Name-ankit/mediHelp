@@ -25,7 +25,7 @@ const Hero = () => {
   };
 
   return (
-    <section className="relative bg-[#0f2a47] text-white pb-24 pt-16 px-6 md:px-20 overflow-hidden">
+    <section className="relative bg-[#0f2a47] text-white pb-24 pt-16 px-6 md:px-20 overflow-hidden mt-16">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12 relative z-10">
         <div className="flex-1 space-y-8">
           <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-2 rounded-full backdrop-blur-md">
