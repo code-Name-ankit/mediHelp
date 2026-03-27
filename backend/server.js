@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 import cors from "cors";
 import connectDB from "./config/db.js";
 import searchRoutes from "./routes/searchRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
+import protectedRoutes from "./routes/protectedRoutes.js";
 
 dotenv.config();
 connectDB();
@@ -19,6 +21,8 @@ app.get("/", (req, res) => {
 
 // Routes
 app.use("/api/search", searchRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api", protectedRoutes);
 
 const PORT = process.env.PORT || 5000;
 
