@@ -32,7 +32,7 @@ const StoreDetailPage = () => {
         </div>
         <div className="text-left">
           <h4 className="font-bold text-slate-800 text-sm leading-tight">{med.name}</h4>
-          <p className="font-black text-emerald-600 text-lg mt-0.5">${med.price.toFixed(2)}</p>
+          <p className="font-black text-emerald-600 text-lg mt-0.5">₹{med.price.toFixed(2)}</p>
         </div>
       </div>
       <div className="flex items-center gap-2">

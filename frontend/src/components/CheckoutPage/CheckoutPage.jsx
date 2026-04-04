@@ -69,9 +69,9 @@ const CheckoutPage = () => {
               <div className="flex-1">
                 <div className="flex justify-between font-bold text-sm text-slate-800">
                   <span>{item.name}</span>
-                  <span className="font-black">${(item.price * item.qty).toFixed(2)}</span>
+                  <span className="font-black">₹{(item.price * item.qty).toFixed(2)}</span>
                 </div>
-                <div className="mt-1 text-[11px] font-bold text-emerald-600">Price: ${item.price.toFixed(2)}</div>
+                <div className="mt-1 text-[11px] font-bold text-emerald-600">Price: ₹{item.price.toFixed(2)}</div>
                 <div className="mt-4 flex items-center bg-slate-100 rounded-xl p-1 w-fit border border-slate-200">
                     <button onClick={() => handleQty(item.id, -1)} className="w-7 h-7 flex items-center justify-center bg-white rounded-lg shadow-sm text-slate-500"><Minus size={12} /></button>
                     <span className="font-black px-4 text-xs text-slate-800">{item.qty}</span>
@@ -86,7 +86,7 @@ const CheckoutPage = () => {
         <div className="shrink-0 bg-white border-t border-slate-100 p-6 space-y-5">
           <div className="flex justify-between items-baseline">
             <span className="text-xs font-black text-slate-400 uppercase tracking-wider">Total Amount</span>
-            <span className="text-3xl font-black text-emerald-600 tracking-tighter">${total}</span>
+            <span className="text-3xl font-black text-emerald-600 tracking-tighter">₹{total}</span>
           </div>
 
           {/* --- Editable Address Section --- */}
