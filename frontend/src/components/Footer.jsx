@@ -2,6 +2,7 @@ import React from 'react';
 import { Mail, Phone, MapPin } from 'lucide-react';
 import mapPreviewImg from '../assets/map-preview.jpg';
 
+
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
@@ -12,15 +13,15 @@ const Footer = () => {
         {/* --- Column 1: Logo & Tagline --- */}
         <div className="space-y-4 text-left">
           <div className="flex items-center gap-3 group cursor-pointer">
-            <div className="bg-gradient-to-br from-green-400 to-emerald-600 p-2 rounded-xl shadow-lg group-hover:rotate-12 transition-transform">
-              <div className="text-white font-bold text-xl leading-none">+</div>
-            </div>
-            <span className="text-2xl font-black tracking-tight text-white italic">
-              Med<span className="text-green-400">Help</span>
-            </span>
+            
+            <img 
+              src="/logo1.png"
+              alt="MedHelp Logo" 
+              className="h-12 w-auto object-contain transition-transform group-hover:scale-105" 
+            />
           </div>
           <p className="text-slate-400 text-sm max-w-xs leading-relaxed">
-            Apki sehat hamari prathmikta. 24/7 medicines aur expert advice ke liye hamesha taiyar.
+           Your health is our priority. We are always ready 24/7 to provide medicines and expert advice.
           </p>
         </div>
 

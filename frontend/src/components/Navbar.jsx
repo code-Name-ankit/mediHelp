@@ -8,20 +8,18 @@ const Navbar = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false); 
   const [cartCount, setCartCount] = useState(2); 
   
-  // 1. Check if User is Logged In
   const isLoggedIn = !!localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
 
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
 
-  // 2. Handle Logout Function
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     setIsProfileOpen(false);
     setIsMenuOpen(false);
-    navigate("/login"); // Logout ke baad login page par bhej dega
+    navigate("/login");
   };
 
   const navLinks = [
@@ -68,14 +66,15 @@ const Navbar = () => {
           {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
 
-        <Link to="/" className="flex items-center gap-3 group">
-          <div className="bg-gradient-to-br from-green-400 to-emerald-600 p-2 rounded-xl shadow-lg group-hover:rotate-12 transition-transform">
-            <div className="text-white font-bold text-xl leading-none">+</div>
-          </div>
-          <span className="text-xl md:text-2xl font-black tracking-tight text-white italic">
-            Med<span className="text-green-400">Help</span>
-          </span>
+        {/* --- LOGO SECTION START --- */}
+        <Link to="/" className="flex items-center group">
+          <img 
+            src="/logo1.png"
+            alt="Medione Logo" 
+            className="h-10 md:h-12 w-auto object-contain transition-transform group-hover:scale-105" 
+          />
         </Link>
+        {/* --- LOGO SECTION END --- */}
 
         {/* Desktop Nav */}
         <div className="hidden lg:flex gap-8 items-center">
@@ -103,7 +102,6 @@ const Navbar = () => {
             <Bell size={20} />
           </button>
 
-          {/* Profile Dropdown */}
           <div className="relative" ref={dropdownRef}>
             <button 
               onClick={() => setIsProfileOpen(!isProfileOpen)}
@@ -115,7 +113,6 @@ const Navbar = () => {
 
             {isProfileOpen && (
               <div className="absolute right-0 mt-3 w-48 bg-[#1a3a5f] border border-white/10 rounded-2xl shadow-2xl py-2 overflow-hidden animate-in fade-in zoom-in-95 duration-200 origin-top-right">
-                
                 {!isLoggedIn ? (
                   <>
                     <button onClick={() => handleAuthNav('/login')} className="w-full flex items-center gap-3 px-4 py-3 text-slate-200 hover:bg-white/5 text-sm font-bold transition-all">
@@ -150,7 +147,8 @@ const Navbar = () => {
         <div className={`absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity duration-500 ${isMenuOpen ? "opacity-100" : "opacity-0"}`} onClick={() => setIsMenuOpen(false)} />
         <div className={`absolute top-0 left-0 bottom-0 w-[280px] bg-[#1a3a5f] shadow-2xl transition-transform duration-500 transform ${isMenuOpen ? "translate-x-0" : "-translate-x-full"}`}>
           <div className="flex items-center justify-between p-6 border-b border-white/10">
-            <div className="flex items-center gap-2 text-white font-black italic"><span className="bg-green-400 p-1.5 rounded-lg text-[#1a3a5f] font-bold">+</span> MedHelp</div>
+            {/* Sidebar Logo */}
+            <img src="/logo1.png" alt="Logo" className="h-8 w-auto" />
             <button onClick={() => setIsMenuOpen(false)} className="p-2 text-slate-300 hover:text-white bg-white/5 rounded-full border border-white/10"><X size={22} /></button>
           </div>
           <div className="flex flex-col gap-1 p-4">

@@ -1,74 +1,145 @@
 import React from 'react';
-import { Tablet, Truck, ShieldCheck, HeartPulse } from 'lucide-react';
+import { 
+  MessageSquare, 
+  FileText, 
+  Search, 
+  Clock, 
+  Shield, 
+  Zap,
+  Download,
+  Video
+} from 'lucide-react';
 
 const Features = () => {
-  const features = [
-    {
-      icon: <Tablet className="text-blue-500" size={24} />,
-      title: "Fast Medicine Search",
-      desc: "Quickly locate the medicine you need from our extensive database of local pharmacies.",
-      bgColor: "bg-blue-50"
-    },
-    {
-      icon: <Truck className="text-orange-400" size={24} />,
-      title: "Real-Time Availability",
-      desc: "Get instant updates on medicine stock levels to avoid unnecessary trips.",
-      bgColor: "bg-orange-50"
-    },
-    {
-      icon: <ShieldCheck className="text-emerald-500" size={24} />,
-      title: "Verified Pharmacies",
-      desc: "We only partner with certified and trusted local medical stores for your safety.",
-      bgColor: "bg-emerald-50"
-    },
-    {
-      icon: <HeartPulse className="text-rose-500" size={24} />,
-      title: "Expert Health Advice",
-      desc: "Consult with certified professionals for guidance on your medical needs.",
-      bgColor: "bg-rose-50"
-    }
-  ];
-
   return (
-    <section className="py-20 px-6 bg-white">
-      <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-16">
-        
-        {/* Left Side: Content */}
-        <div className="flex-1 text-left space-y-4">
-          <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">Our Key Features</p>
-          <h2 className="text-4xl font-black text-slate-900 leading-tight">
-            Why Choose Our <br /> Medicine Finder?
-          </h2>
-          <p className="text-slate-500 text-sm leading-relaxed max-w-sm">
-            We bridge the gap between you and your local pharmacies, making healthcare more accessible and reliable.
+    <div className="bg-slate-50 min-h-screen font-sans mt-10">
+      
+      {/* --- Hero Section --- */}
+      <section className="bg-gradient-to-b from-[#1a3a5f] to-[#254d7d] py-20 px-6 text-center text-white">
+        <div className="max-w-4xl mx-auto">
+          <span className="bg-emerald-500/20 text-emerald-300 px-4 py-1 rounded-full text-sm font-bold uppercase tracking-widest border border-emerald-500/30">
+            Smart Healthcare
+          </span>
+          <h1 className="text-4xl md:text-5xl font-extrabold mt-6 mb-6">
+            Features designed for <span className="text-emerald-400">your well-being</span>
+          </h1>
+          <p className="text-slate-300 text-lg max-w-2xl mx-auto">
+            Medione brings advanced medical tools to your fingertips. From instant consultations to secure report management.
           </p>
-          <button className="bg-[#1a3a5f] text-white px-8 py-3 rounded-2xl font-bold text-sm hover:bg-slate-800 transition-all shadow-lg shadow-blue-900/10">
-            Learn More
-          </button>
         </div>
+      </section>
 
-        {/* Right Side: Features Grid */}
-        <div className="flex-[1.5] grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {features.map((feature, index) => (
-            <div 
-              key={index} 
-              className="p-8 rounded-[32px] border border-slate-50 bg-white shadow-[0_15px_40px_rgba(0,0,0,0.03)] hover:shadow-[0_25px_50px_rgba(0,0,0,0.06)] transition-all group"
-            >
-              <div className={`${feature.bgColor} w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
-                {feature.icon}
-              </div>
-              <h3 className="font-black text-slate-900 text-lg mb-3">
-                {feature.title}
-              </h3>
-              <p className="text-slate-400 text-xs leading-relaxed font-medium">
-                {feature.desc}
-              </p>
+      {/* --- Main Features: Doctor Chat & Reports --- */}
+      <section className="max-w-7xl mx-auto -mt-12 px-6 pb-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          
+          {/* Feature 1: Chat to Doctor */}
+          <div className="bg-white p-8 rounded-3xl shadow-xl border border-slate-100 hover:border-emerald-400 transition-all group">
+            <div className="w-14 h-14 bg-emerald-100 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-emerald-500 transition-colors">
+              <MessageSquare className="text-emerald-600 group-hover:text-white" size={30} />
             </div>
-          ))}
-        </div>
+            <h2 className="text-2xl font-bold text-[#1a3a5f] mb-4">Chat to Doctor</h2>
+            <p className="text-slate-600 mb-6 leading-relaxed">
+              No need to wait in long queues. Connect with verified specialists instantly through our secure chat and video consultation system.
+            </p>
+            <ul className="space-y-3 mb-8">
+              <li className="flex items-center gap-3 text-slate-700 font-medium">
+                <Zap size={18} className="text-emerald-500" /> 24/7 Instant response
+              </li>
+              <li className="flex items-center gap-3 text-slate-700 font-medium">
+                <Video size={18} className="text-emerald-500" /> Private video calls
+              </li>
+              <li className="flex items-center gap-3 text-slate-700 font-medium">
+                <Shield size={18} className="text-emerald-500" /> Fully encrypted & private
+              </li>
+            </ul>
+            <button className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl transition shadow-md">
+              Start Consultation
+            </button>
+          </div>
 
-      </div>
-    </section>
+          {/* Feature 2: Doctor Reports */}
+          <div className="bg-white p-8 rounded-3xl shadow-xl border border-slate-100 hover:border-[#1a3a5f] transition-all group">
+            <div className="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#1a3a5f] transition-colors">
+              <FileText className="text-blue-600 group-hover:text-white" size={30} />
+            </div>
+            <h2 className="text-2xl font-bold text-[#1a3a5f] mb-4">Smart Medical Reports</h2>
+            <p className="text-slate-600 mb-6 leading-relaxed">
+              Keep all your health history in your pocket. Securely store, organize, and share your lab reports and prescriptions with ease.
+            </p>
+            <ul className="space-y-3 mb-8">
+              <li className="flex items-center gap-3 text-slate-700 font-medium">
+                <Download size={18} className="text-blue-500" /> One-click download
+              </li>
+              <li className="flex items-center gap-3 text-slate-700 font-medium">
+                <Search size={18} className="text-blue-500" /> Easy search by date or doctor
+              </li>
+              <li className="flex items-center gap-3 text-slate-700 font-medium">
+                <Shield size={18} className="text-blue-500" /> Cloud-based secure storage
+              </li>
+            </ul>
+            <button className="w-full bg-[#1a3a5f] hover:bg-[#112741] text-white font-bold py-3 rounded-xl transition shadow-md">
+              View My Reports
+            </button>
+          </div>
+
+        </div>
+      </section>
+
+      {/* --- Additional Features Grid --- */}
+      <section className="bg-white py-20 px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-[#1a3a5f]">More Than Just a Pharmacy</h2>
+            <p className="text-slate-500 mt-2 italic">Everything you need to manage your health digitally</p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10">
+            {/* Feature 3 */}
+            <div className="text-center p-6 hover:translate-y-[-5px] transition-transform">
+              <div className="mx-auto w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4">
+                <Search className="text-emerald-500" />
+              </div>
+              <h4 className="font-bold text-lg mb-2">Medicine Finder</h4>
+              <p className="text-slate-500 text-sm">Find medicines from different brands and check their substitutes.</p>
+            </div>
+
+            {/* Feature 4 */}
+            <div className="text-center p-6 hover:translate-y-[-5px] transition-transform">
+              <div className="mx-auto w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4">
+                <Clock className="text-emerald-500" />
+              </div>
+              <h4 className="font-bold text-lg mb-2">Availability Tracking</h4>
+              <p className="text-slate-500 text-sm">Real-time stock status of medicines in your local area.</p>
+            </div>
+
+            {/* Feature 5 */}
+            <div className="text-center p-6 hover:translate-y-[-5px] transition-transform">
+              <div className="mx-auto w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4">
+                <Shield className="text-emerald-500" />
+              </div>
+              <h4 className="font-bold text-lg mb-2">Emergency First-Aid</h4>
+              <p className="text-slate-500 text-sm">Get step-by-step guidance for medical emergencies at home.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* --- Trust Banner --- */}
+      <section className="py-12 bg-[#1a3a5f] text-white">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="text-center md:text-left">
+            <h3 className="text-2xl font-bold">Your data is safe with us</h3>
+            <p className="text-slate-400">Medione uses bank-grade encryption to protect your health records.</p>
+          </div>
+          <div className="flex gap-4">
+            <div className="bg-white/10 px-6 py-2 rounded-lg border border-white/20">ISO Certified</div>
+            <div className="bg-white/10 px-6 py-2 rounded-lg border border-white/20">Secure Pay</div>
+          </div>
+        </div>
+      </section>
+
+    </div>
   );
 };
 
