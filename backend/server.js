@@ -2,9 +2,12 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import connectDB from "./config/db.js";
+
+
 import searchRoutes from "./routes/searchRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import protectedRoutes from "./routes/protectedRoutes.js";
+import labRoutes from "./routes/lab.routes.js";
 
 dotenv.config();
 connectDB();
@@ -15,6 +18,8 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use("/uploads", express.static("uploads"));
+
 app.get("/", (req, res) => {
   res.send("API Running...");
 });
@@ -23,6 +28,7 @@ app.get("/", (req, res) => {
 app.use("/api/search", searchRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api", protectedRoutes);
+app.use("/api/lab", labRoutes);
 
 const PORT = process.env.PORT || 5000;
 

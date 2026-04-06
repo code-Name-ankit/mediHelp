@@ -18,6 +18,9 @@ import AuthForm from "./components/auth/AuthForm"; // Authentication Form compon
 import About from "./components/About"; // About Page component
 import FeaturesPage from "./components/Features"; // Features Page component
 import Contact from "./components/Contact"; // Contact Page component
+import LabPage from "./components/Labs/LabPage";
+import LabDetail from "./components/Labs/LabDetail";
+import Checkout from "./components/Labs/Checkout";
 function App() {
   return (
     <Router>
@@ -48,7 +51,10 @@ function App() {
           <Route path="/register" element={<AuthForm mode="register" />} />
           <Route path="/about" element={<About />} />
           <Route path="/features" element={<FeaturesPage />} />
-            <Route path="/contact" element={<Contact />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/labs" element={<LabPage />} />
+          <Route path="/lab/:id" element={<LabDetail />} />
+          <Route path="/book-collection/:id" element={<Checkout />} />
         </Routes>
 
         <Footer />

@@ -1,0 +1,30 @@
+/* LabMapView.css */
+
+/* 1. Default Leaflet background aur shadow ko hatana */
+.custom-popup .leaflet-popup-content-wrapper {
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  border: none !important;
+}
+
+/* 2. Content area ki width set karna */
+.custom-popup .leaflet-popup-content {
+  margin: 0 !important;
+  width: 240px !important; 
+}
+
+/* 3. Niche ka chhota triangle (tip) hatana */
+.custom-popup .leaflet-popup-tip-container {
+  display: none !important;
+}
+
+/* 4. Default close button ko hide karna */
+.custom-popup .leaflet-popup-close-button {
+  display: none !important;
+}
+
+/* 5. Map container fix */
+.leaflet-container {
+  font-family: inherit !important;
+}

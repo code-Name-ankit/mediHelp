@@ -53,9 +53,9 @@ const Features = () => {
                 <Shield size={18} className="text-emerald-500" /> Fully encrypted & private
               </li>
             </ul>
-            <button className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl transition shadow-md">
+            {/* <button className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl transition shadow-md">
               Start Consultation
-            </button>
+            </button> */}
           </div>
 
           {/* Feature 2: Doctor Reports */}
@@ -78,9 +78,9 @@ const Features = () => {
                 <Shield size={18} className="text-blue-500" /> Cloud-based secure storage
               </li>
             </ul>
-            <button className="w-full bg-[#1a3a5f] hover:bg-[#112741] text-white font-bold py-3 rounded-xl transition shadow-md">
+            {/* <button className="w-full bg-[#1a3a5f] hover:bg-[#112741] text-white font-bold py-3 rounded-xl transition shadow-md">
               View My Reports
-            </button>
+            </button> */}
           </div>
 
         </div>
